@@ -36,13 +36,19 @@ const sendMessage = () => {
         })
 }
 
+const checkNumber = (number) => {
+    return number % 10 === 0;
+}
 
 // LISTEN ON UPDATED
 exports.counterUpdatedListener = functions.firestore
     .document('counter/{documentId}')
     .onUpdate((snapshot, context) => {
-
-        sendMessage();
-
+        const currCount = snapshot.after.data().count;
+        console.log(currCount);
+        const isDivisibleByTen = checkNumber(currCount);
+        if(isDivisibleByTen) {
+            sendMessage();
+        }
         return Promise.resolve();
     }); 
